@@ -3,7 +3,7 @@
 ## Tooling
 
 - Vite
-- Styled Components
+- Styled Components (CSS in JS)
 - TypeScript
 - ESLint
 - React Router
