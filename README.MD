@@ -8,6 +8,8 @@
 - ESLint
 - React Router
 - Context providers
+- React Hook Forms
+- Zod
 
 ## Concepts
 
