@@ -18,13 +18,22 @@ const newCycleFormValidationSchema = z.object({
   minutesAmount: z.number().min(5).max(60),
 });
 
+// Gets type from zod object schema using infer - remember to always
+// have the typeof otherwise typescript cannot infer from JS variable
+type NewCycleFormData = z.infer<typeof newCycleFormValidationSchema>;
+
 export function Home() {
-  const { register, handleSubmit, watch } = useForm({
+  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: "",
+      minutesAmount: 0,
+    },
   });
 
-  function handleCreateNewCycle(data: any) {
+  function handleCreateNewCycle(data: NewCycleFormData) {
     console.log(data);
+    reset();
   }
 
   const task = watch("task");
