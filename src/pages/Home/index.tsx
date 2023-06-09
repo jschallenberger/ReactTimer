@@ -15,6 +15,8 @@ import {
   TaskInput,
 } from "./styles";
 import { useEffect, useState } from "react";
+import { CountdownTimer } from "./components/CountdownTimer";
+import { NewCycleForm } from "./components/NewCycleForm";
 
 const newCycleFormValidationSchema = z.object({
   task: z.string().min(1, "Informe uma tarefa"),
@@ -133,45 +135,9 @@ export function Home() {
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
-        <FormContainer>
-          <label htmlFor="task">Vou trabalhar em</label>
-          <TaskInput
-            id="task"
-            list="task-suggestions"
-            placeholder="Dê um nome para o seu projeto"
-            disabled={!!activeCycle}
-            {...register("task")}
-          />
+        <NewCycleForm />
 
-          <datalist id="task-suggestions">
-            <option value="Task 1" />
-            <option value="Task 2" />
-            <option value="Task 3" />
-            <option value="Task 4" />
-          </datalist>
-
-          <label htmlFor="minutesAmount">Durante</label>
-          <MinutesInput
-            id="minutesAmount"
-            type="number"
-            placeholder="00"
-            step={5}
-            min={1}
-            max={60}
-            disabled={!!activeCycle}
-            {...register("minutesAmount", { valueAsNumber: true })}
-          />
-
-          <span>minutos.</span>
-        </FormContainer>
-
-        <CountdownContainer>
-          <span>{minutes[0]}</span>
-          <span>{minutes[1]}</span>
-          <Separator>:</Separator>
-          <span>{seconds[0]}</span>
-          <span>{seconds[1]}</span>
-        </CountdownContainer>
+        <CountdownTimer />
 
         {activeCycle ? (
           <StopCountdownButton onClick={handleInterruptCycle} type="button">
