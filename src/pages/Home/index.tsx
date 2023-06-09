@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 
 const newCycleFormValidationSchema = z.object({
   task: z.string().min(1, "Informe uma tarefa"),
-  minutesAmount: z.number().min(5).max(60),
+  minutesAmount: z.number().min(1).max(60),
 });
 
 // Gets type from zod object schema using infer - remember to always
@@ -38,6 +38,8 @@ export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]);
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
   const [secondsPassed, setSecondsPassed] = useState(0);
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
 
   const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -47,16 +49,33 @@ export function Home() {
     },
   });
 
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
-
   useEffect(() => {
     let interval: number;
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate)
+        const elapsedSeconds = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate
         );
+
+        if (elapsedSeconds >= totalSeconds) {
+          setCycles((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, completedDate: new Date() };
+              } else {
+                return cycle;
+              }
+            })
+          );
+          document.title = "Timer";
+          setSecondsPassed(totalSeconds);
+          setActiveCycleId(null);
+          clearInterval(interval);
+        } else {
+          setSecondsPassed(elapsedSeconds);
+        }
       }, 1000);
     }
 
@@ -64,7 +83,7 @@ export function Home() {
       clearInterval(interval);
       setSecondsPassed(0);
     };
-  }, [activeCycle]);
+  }, [activeCycle, activeCycleId, totalSeconds]);
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     const newCycle: Cycle = {
@@ -81,8 +100,8 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
-    setCycles(
-      cycles.map((cycle) => {
+    setCycles((state) =>
+      state.map((cycle) => {
         if (cycle.id === activeCycleId) {
           return { ...cycle, interruptDate: new Date() };
         } else {
@@ -94,7 +113,6 @@ export function Home() {
     document.title = "Timer";
   }
 
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
   const currentSeconds = activeCycle ? totalSeconds - secondsPassed : 0;
 
   const minutesAmount = Math.floor(currentSeconds / 60);
@@ -138,7 +156,7 @@ export function Home() {
             type="number"
             placeholder="00"
             step={5}
-            min={5}
+            min={1}
             max={60}
             disabled={!!activeCycle}
             {...register("minutesAmount", { valueAsNumber: true })}
