@@ -10,6 +10,7 @@
 - Context providers
 - React Hook Forms
 - Zod
+- Context API
 
 ## Concepts
 
