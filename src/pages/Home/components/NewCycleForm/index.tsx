@@ -1,25 +1,12 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { FormContainer, TaskInput, MinutesInput } from "./styles";
-import { z } from "zod";
+import { useContext } from "react";
+import { CyclesContext } from "../..";
 
 export function NewCycleForm() {
-  const newCycleFormValidationSchema = z.object({
-    task: z.string().min(1, "Informe uma tarefa"),
-    minutesAmount: z.number().min(1).max(60),
-  });
+  const { activeCycle } = useContext(CyclesContext);
+  const { register } = useFormContext();
 
-  // Gets type from zod object schema using infer - remember to always
-  // have the typeof otherwise typescript cannot infer from JS variable
-  type NewCycleFormData = z.infer<typeof newCycleFormValidationSchema>;
-
-  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
-    resolver: zodResolver(newCycleFormValidationSchema),
-    defaultValues: {
-      task: "",
-      minutesAmount: 0,
-    },
-  });
   return (
     <FormContainer>
       <label htmlFor="task">Vou trabalhar em</label>

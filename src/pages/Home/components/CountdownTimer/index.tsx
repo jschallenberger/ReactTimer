@@ -1,12 +1,16 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { CountdownContainer, Separator } from "./styles";
 import { differenceInSeconds } from "date-fns";
 import { CyclesContext } from "../..";
 
 export function CountdownTimer() {
-  const { activeCycle, activeCycleId, markCurrentCycleAsFinished } =
-    useContext(CyclesContext);
-  const [secondsPassed, setSecondsPassed] = useState(0);
+  const {
+    activeCycle,
+    activeCycleId,
+    secondsPassed,
+    markCurrentCycleAsFinished,
+    setAmountSecondsPassed,
+  } = useContext(CyclesContext);
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
 
   useEffect(() => {
@@ -23,18 +27,23 @@ export function CountdownTimer() {
           markCurrentCycleAsFinished();
 
           document.title = "Timer";
-          setSecondsPassed(totalSeconds);
+          setAmountSecondsPassed(totalSeconds);
           clearInterval(interval);
         } else {
-          setSecondsPassed(elapsedSeconds);
+          setAmountSecondsPassed(elapsedSeconds);
         }
       }, 1000);
     }
     return () => {
       clearInterval(interval);
-      setSecondsPassed(0);
     };
-  }, [activeCycle, activeCycleId, totalSeconds, markCurrentCycleAsFinished]);
+  }, [
+    activeCycle,
+    activeCycleId,
+    totalSeconds,
+    markCurrentCycleAsFinished,
+    setAmountSecondsPassed,
+  ]);
 
   const currentSeconds = activeCycle ? totalSeconds - secondsPassed : 0;
 
