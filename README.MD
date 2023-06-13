@@ -10,11 +10,15 @@
 - Context providers
 - React Hook Forms
 - Zod
-- Context API
+- Context API (created own context)
+- date-fns
+- Conditional rendering
+- Reducers
 
 ## Concepts
 
 - Layout pages & Outlets
+- Clean code (isolating with minimum dependencies possible)
 
 ## Development
 

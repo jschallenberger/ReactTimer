@@ -8,7 +8,7 @@ export function CountdownTimer() {
     activeCycle,
     activeCycleId,
     secondsPassed,
-    markCurrentCycleAsFinished,
+    markCurrentCycleAsCompleted,
     setAmountSecondsPassed,
   } = useContext(CyclesContext);
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
@@ -24,7 +24,7 @@ export function CountdownTimer() {
         );
 
         if (elapsedSeconds >= totalSeconds) {
-          markCurrentCycleAsFinished();
+          markCurrentCycleAsCompleted();
 
           document.title = "Timer";
           setAmountSecondsPassed(totalSeconds);
@@ -41,7 +41,7 @@ export function CountdownTimer() {
     activeCycle,
     activeCycleId,
     totalSeconds,
-    markCurrentCycleAsFinished,
+    markCurrentCycleAsCompleted,
     setAmountSecondsPassed,
   ]);
 
