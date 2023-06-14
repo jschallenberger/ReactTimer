@@ -14,11 +14,12 @@
 - date-fns
 - Conditional rendering
 - Reducers
+- Immer
 
 ## Concepts
 
 - Layout pages & Outlets
-- Clean code (isolating with minimum dependencies possible)
+- Clean code (Single Resposability Principle, Open Closed Principle)
 
 ## Development
 
