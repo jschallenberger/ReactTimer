@@ -6,7 +6,12 @@ export enum ActionTypes {
   INTERRUPT_CURRENT_CYCLE = "INTERRUPT_CURRENT_CYCLE",
 }
 
-export function addNewCycleAction(newCycle: Cycle) {
+export type ActionTypesProps =
+  | { type: ActionTypes.ADD_NEW_CYCLE; payload: { newCycle: Cycle } }
+  | { type: ActionTypes.MARK_CURRENT_CYCLE_AS_COMPLETED }
+  | { type: ActionTypes.INTERRUPT_CURRENT_CYCLE };
+
+export function addNewCycleAction(newCycle: Cycle): ActionTypesProps {
   return {
     type: ActionTypes.ADD_NEW_CYCLE,
     payload: {
@@ -15,13 +20,13 @@ export function addNewCycleAction(newCycle: Cycle) {
   };
 }
 
-export function markCurrentCycleAsCompletedAction() {
+export function markCurrentCycleAsCompletedAction(): ActionTypesProps {
   return {
     type: ActionTypes.MARK_CURRENT_CYCLE_AS_COMPLETED,
   };
 }
 
-export function interruptCurrentCycleAction() {
+export function interruptCurrentCycleAction(): ActionTypesProps {
   document.title = "Timer";
   return {
     type: ActionTypes.INTERRUPT_CURRENT_CYCLE,

@@ -20,7 +20,7 @@ export function CountdownTimer() {
       interval = setInterval(() => {
         const elapsedSeconds = differenceInSeconds(
           new Date(),
-          activeCycle.startDate
+          new Date(activeCycle.startDate)
         );
 
         if (elapsedSeconds >= totalSeconds) {

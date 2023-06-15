@@ -1,4 +1,11 @@
-import { ReactNode, createContext, useReducer, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
+import { version } from "../../package.json";
 import {
   ActionTypes,
   addNewCycleAction,
@@ -6,6 +13,7 @@ import {
   markCurrentCycleAsCompletedAction,
 } from "../reducers/cycles/actions";
 import { Cycle, cyclesReducer } from "../reducers/cycles/reducer";
+import { differenceInSeconds } from "date-fns";
 
 // It is best to replicate the interface again in current Context then have the
 // dependencies related to zod or any other library, it will create flexibility
@@ -30,6 +38,8 @@ interface CyclesContextProviderProps {
   children: ReactNode;
 }
 
+const localStorageCycles = `@JTimer:cycles-state ${version}`;
+
 export const CyclesContext = createContext({} as CyclesContextType);
 
 export function CyclesContextProvider({
@@ -37,18 +47,38 @@ export function CyclesContextProvider({
 }: CyclesContextProviderProps) {
   const [cyclesState, dispatch] = useReducer(
     cyclesReducer,
-    // Initialize state
+    // Initialize empty state or w/ localStorage
     {
       cycles: [],
       activeCycleId: null,
-    }
-    // Initialize state
-  );
+    },
+    (initialState) => {
+      const storedCyclesAsJson = localStorage.getItem(localStorageCycles);
+      if (storedCyclesAsJson) {
+        return JSON.parse(storedCyclesAsJson);
+      }
 
-  const [secondsPassed, setSecondsPassed] = useState(0);
+      return initialState;
+    }
+    // Initialize empty state or w/ localStorage
+  );
 
   const { activeCycleId, cycles } = cyclesState;
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState);
+
+    localStorage.setItem(localStorageCycles, stateJSON);
+  }, [cyclesState]);
+
+  const [secondsPassed, setSecondsPassed] = useState(() => {
+    if (activeCycle) {
+      return differenceInSeconds(new Date(), new Date(activeCycle.startDate));
+    }
+
+    return 0;
+  });
 
   function markCurrentCycleAsCompleted() {
     dispatch(markCurrentCycleAsCompletedAction());
